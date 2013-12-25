@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Phoenix Edu</string>
+    <string name="unknown">Unknown</string>
+    <string name="new_video">New</string>
+    <string name="thumbnail_of_video">Thumbnail of video</string>
+    <string name="already_watched">Already watched</string>
+
+</resources>

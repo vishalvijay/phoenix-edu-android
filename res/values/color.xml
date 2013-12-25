@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="main_background">#f0f0f0</color>
+    <color name="glow_blue">#01b5b6</color>
+    <color name="place_holder">#656565</color>
+    <color name="white">#ffffff</color>
+    <color name="third_highlited">#677172</color>
+    <color name="second_highlited">#454e4d</color>
+    <color name="first_highlited">#000000</color>
+    <color name="default_button_click">#e74c3c</color>
+    <color name="transperent_black">#80000000</color>
+    <color name="default_list_item_click">#40e74c3c</color>
+</resources>

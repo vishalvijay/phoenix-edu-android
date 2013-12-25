@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_background"
+    android:descendantFocusability="blocksDescendants" >
+
+    <ImageButton
+        android:id="@+id/favoriteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/default_selecter"
+        android:src="@drawable/ic_action_not_important" />
+
+    <com.v4creations.phoenixedu.view.customviews.CustomeTextView
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/favoriteButton"
+        android:paddingBottom="2dp"
+        android:paddingLeft="@dimen/default_padding"
+        android:paddingRight="@dimen/default_padding"
+        android:paddingTop="@dimen/default_padding"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/first_highlited" />
+
+    <RelativeLayout
+        android:id="@+id/thumbnailRelativeLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titleTextView"
+        android:paddingBottom="@dimen/default_padding"
+        android:paddingLeft="@dimen/default_duoble_padding"
+        android:paddingRight="@dimen/default_duoble_padding" >
+
+        <ImageView
+            android:id="@+id/thumbnailImageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/default_thumnail"
+            android:contentDescription="@string/thumbnail_of_video" />
+
+        <ProgressBar
+            android:id="@+id/thumnailLoadingProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <com.v4creations.phoenixedu.view.customviews.CustomeTextView
+            android:id="@+id/durationTextViews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:background="@color/transperent_black"
+            android:padding="2dp"
+            android:textColor="@color/white" />
+
+        <ImageView
+            android:id="@+id/watchedImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:background="@color/transperent_black"
+            android:contentDescription="@string/already_watched"
+            android:src="@drawable/ic_action_accept" />
+
+        <com.v4creations.phoenixedu.view.customviews.CustomeTextView
+            android:id="@+id/newTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/transperent_black"
+            android:padding="2dp"
+            android:text="@string/new_video"
+            android:textColor="@color/default_button_click" />
+    </RelativeLayout>
+
+    <com.v4creations.phoenixedu.view.customviews.CustomeTextView
+        android:id="@+id/categoryTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/thumbnailRelativeLayout"
+        android:background="@drawable/default_selecter"
+        android:clickable="true"
+        android:padding="2dp"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/white"
+        android:textStyle="italic" />
+
+    <com.v4creations.phoenixedu.view.customviews.CustomeTextView
+        android:id="@+id/updatedAtTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/thumbnailRelativeLayout"
+        android:layout_marginLeft="@dimen/default_padding"
+        android:singleLine="true"
+        android:textColor="@color/third_highlited"
+        android:textSize="12sp"
+        android:textStyle="italic" />
+
+    <com.v4creations.phoenixedu.view.customviews.CustomeTextView
+        android:id="@+id/descriptionTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/categoryTextView"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:paddingBottom="@dimen/default_padding"
+        android:paddingLeft="@dimen/default_padding"
+        android:paddingRight="@dimen/default_padding"
+        android:paddingTop="2dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/second_highlited" />
+
+</RelativeLayout>
