@@ -40,7 +40,7 @@
             android:id="@+id/thumbnailImageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/default_thumnail"
+            android:background="@drawable/default_thumbnail"
             android:contentDescription="@string/thumbnail_of_video" />
 
         <ProgressBar
@@ -113,6 +113,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/categoryTextView"
         android:ellipsize="end"
+        android:lines="3"
         android:maxLines="3"
         android:paddingBottom="@dimen/default_padding"
         android:paddingLeft="@dimen/default_padding"

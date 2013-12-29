@@ -5,7 +5,6 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -94,12 +93,12 @@ public class YoutubeVideoController {
 						Log.e(TAG, response.toString());
 						YoutubeVideo[] youtubeVideos = new Gson().fromJson(
 								response.toString(), YoutubeVideo[].class);
+						asyncToDatabase(youtubeVideos, false);
+						loadCursor();
 						if (youtubeVideos.length < PhoenixEduConstance.PAGE_LIMIT)
 							youtubeVideoSync.onFinishYoutubeVideoSync();
 						else {
-							asyncToDatabase(youtubeVideos, false);
 							syncNewYoutubeVideos(dateTimeString, page + 1, 0);
-							loadCursor();
 						}
 					}
 
@@ -162,6 +161,7 @@ public class YoutubeVideoController {
 
 	public void destroy() {
 		isDestroyed = true;
+		ormLiteCompactCursorLoader.onFinishOrmLiteCompactCursorLoading(null);
 		if (ormLiteCompactCursor != null)
 			ormLiteCompactCursor.close();
 		youtubeVideosRepository.close();

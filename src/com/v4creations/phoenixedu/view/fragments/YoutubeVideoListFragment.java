@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
 import com.v4creations.phoenixedu.R;
 import com.v4creations.phoenixedu.controller.YoutubeVideoController;
 import com.v4creations.phoenixedu.controller.YoutubeVideoSync;
@@ -27,21 +28,19 @@ public class YoutubeVideoListFragment extends Fragment implements
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		activity = (PhoenixEduMainFragmentActivity) getActivity();
-		View v = inflater.inflate(R.layout.fragment_youtube_video, null);
-		gridView = (GridView) v.findViewById(R.id.list);
-		gridView.setEmptyView(v.findViewById(android.R.id.empty));
-		return v;
+		return inflater.inflate(R.layout.fragment_youtube_video, null);
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setRetainInstance(true);
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		gridView = (GridView) getView().findViewById(R.id.list);
+		gridView.setEmptyView(getView().findViewById(android.R.id.empty));
 		controller = new YoutubeVideoController(activity, this);
 		initViews();
 		controller.startSync();
@@ -51,6 +50,8 @@ public class YoutubeVideoListFragment extends Fragment implements
 		adapter = new YoutubeVideoCursorAdapter(activity,
 				R.layout.list_item_main_youtube_video, null);
 		gridView.setAdapter(adapter);
+		gridView.setOnScrollListener(new PauseOnScrollListener(adapter
+				.getImageLoader(), true, false));
 		controller.loadCursor();
 	}
 

@@ -15,16 +15,20 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.v4creations.phoenixedu.R;
 import com.v4creations.phoenixedu.model.YoutubeVideo;
 import com.v4creations.phoenixedu.util.PhoenixEduConstance;
+import com.v4creations.phoenixedu.util.PhoenixEduImageLoader;
 
 public class YoutubeVideoCursorAdapter extends ResourceCursorAdapter {
 
 	String TAG = "YoutubeVideoCursorAdapter";
+	private PhoenixEduImageLoader phoenixEduImageLoader;
 
 	public YoutubeVideoCursorAdapter(Context context, int layout, Cursor c) {
 		super(context, layout, c, true);
+		phoenixEduImageLoader = new PhoenixEduImageLoader(context);
 	}
 
 	@Override
@@ -51,6 +55,7 @@ public class YoutubeVideoCursorAdapter extends ResourceCursorAdapter {
 			viewHolder.watchedImageView = (ImageView) view
 					.findViewById(R.id.watchedImageView);
 			view.setTag(viewHolder);
+
 		} else {
 			viewHolder = (ViewHolder) view.getTag();
 		}
@@ -68,6 +73,10 @@ public class YoutubeVideoCursorAdapter extends ResourceCursorAdapter {
 				.setText(getStringFromCursor(YoutubeVideo.COL_TITLE));
 		viewHolder.updatedAtTextView.setText(getHumanReadableUpdateAt(context));
 		viewHolder.watchedImageView.setVisibility(getIsWatched());
+		phoenixEduImageLoader.assignImage(
+				viewHolder.thumbnailLoadingProgressBar,
+				viewHolder.thumbnailImageView,
+				getStringFromCursor(YoutubeVideo.COL_YID));
 	}
 
 	private String getHumanReadableUpdateAt(Context context) {
@@ -129,6 +138,10 @@ public class YoutubeVideoCursorAdapter extends ResourceCursorAdapter {
 
 	private String getStringFromCursor(String column) {
 		return getCursor().getString(getCursor().getColumnIndex(column));
+	}
+
+	public ImageLoader getImageLoader() {
+		return phoenixEduImageLoader.getImageLoader();
 	}
 
 	private class ViewHolder {
