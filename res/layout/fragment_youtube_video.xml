@@ -21,7 +21,6 @@
         android:numColumns="@integer/grid_column"
         android:padding="@dimen/default_padding"
         android:scrollbarStyle="outsideOverlay"
-        android:verticalSpacing="@dimen/default_padding" >
-    </GridView>
+        android:verticalSpacing="@dimen/default_padding" />
 
 </RelativeLayout>

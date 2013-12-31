@@ -6,7 +6,7 @@
     android:descendantFocusability="blocksDescendants" >
 
     <ImageButton
-        android:id="@+id/favoriteButton"
+        android:id="@+id/favoriteImageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -18,7 +18,7 @@
         android:id="@+id/titleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/favoriteButton"
+        android:layout_toLeftOf="@id/favoriteImageButton"
         android:paddingBottom="2dp"
         android:paddingLeft="@dimen/default_padding"
         android:paddingRight="@dimen/default_padding"

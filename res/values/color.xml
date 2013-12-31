@@ -11,4 +11,7 @@
     <color name="default_button_click">#e74c3c</color>
     <color name="transperent_black">#80000000</color>
     <color name="default_list_item_click">#40e74c3c</color>
+    <color name="action_bar">#3e4651</color>
+    <color name="action_bar_button">#292e36</color>
+
 </resources>

@@ -1,14 +1,53 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res/com.v4creations.phoenixedu"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/main_background"
+    android:orientation="vertical"
     tools:context=".PhonixMainActivity" >
 
     <fragment
         android:id="@+id/youtubeVideoFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/action_bar_default_height"
         class="com.v4creations.phoenixedu.view.fragments.YoutubeVideoListFragment" />
 
-</FrameLayout>
+    <RelativeLayout
+        android:id="@+id/verticalNavigationDrawer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/action_bar_default_height"
+        android:background="@drawable/navigation_bar_background"
+        android:gravity="center"
+        android:padding="@dimen/default_padding" >
+
+        <it.sephiroth.android.library.widget.HListView
+            android:id="@+id/favoriteHList"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:drawSelectorOnTop="true"
+            android:listSelector="@drawable/phoenixedu_list_selector_holo_light"
+            app:dividerWidth="@dimen/default_padding" />
+
+        <TextView
+            android:id="@+id/emptyTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:gravity="center"
+            android:text="Empty favorits" />
+
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Search" />
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/actionBarPartial"
+        android:layout_alignParentTop="true"
+        layout="@layout/actionbar_partial" />
+
+</RelativeLayout>

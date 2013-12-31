@@ -1,6 +1,7 @@
 package com.v4creations.phoenixedu.view.fragments;
 
-import android.database.Cursor;
+import java.util.ArrayList;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,16 +12,17 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
 import com.v4creations.phoenixedu.R;
+import com.v4creations.phoenixedu.controller.FavoriteYoutubeVideoLoader;
 import com.v4creations.phoenixedu.controller.YoutubeVideoController;
 import com.v4creations.phoenixedu.controller.YoutubeVideoSync;
-import com.v4creations.phoenixedu.controller.adapter.YoutubeVideoCursorAdapter;
-import com.v4creations.phoenixedu.model.OrmLiteCompactCursor.OrmLiteCompactCursorLoader;
+import com.v4creations.phoenixedu.controller.adapter.YoutubeVideoArrayAdapter;
+import com.v4creations.phoenixedu.model.YoutubeVideo;
 import com.v4creations.phoenixedu.view.activitys.PhoenixEduMainFragmentActivity;
 
 public class YoutubeVideoListFragment extends Fragment implements
-		YoutubeVideoSync, OrmLiteCompactCursorLoader {
+		YoutubeVideoSync, FavoriteYoutubeVideoLoader {
 	private PhoenixEduMainFragmentActivity activity;
-	private YoutubeVideoCursorAdapter adapter;
+	private YoutubeVideoArrayAdapter adapter;
 	private YoutubeVideoController controller;
 	private GridView gridView;
 
@@ -42,22 +44,18 @@ public class YoutubeVideoListFragment extends Fragment implements
 		gridView = (GridView) getView().findViewById(R.id.list);
 		gridView.setEmptyView(getView().findViewById(android.R.id.empty));
 		controller = new YoutubeVideoController(activity, this);
-		initViews();
 		controller.startSync();
+		initViews();
 	}
 
 	private void initViews() {
-		adapter = new YoutubeVideoCursorAdapter(activity,
-				R.layout.list_item_main_youtube_video, null);
+		adapter = new YoutubeVideoArrayAdapter(controller, activity,
+				R.layout.list_item_main_youtube_video,
+				new ArrayList<YoutubeVideo>());
 		gridView.setAdapter(adapter);
 		gridView.setOnScrollListener(new PauseOnScrollListener(adapter
 				.getImageLoader(), true, false));
-		controller.loadCursor();
-	}
-
-	@Override
-	public void onFinishOrmLiteCompactCursorLoading(Cursor cursor) {
-		adapter.changeCursor(cursor);
+		controller.loadYoutubeVideos();
 	}
 
 	@Override
@@ -72,7 +70,26 @@ public class YoutubeVideoListFragment extends Fragment implements
 	}
 
 	@Override
-	public void onFinishYoutubeVideoSync() {
+	public void onFinishYoutubeVideoSync(boolean isDataChanged) {
+		if (isDataChanged)
+			controller.loadYoutubeVideos();
 		Toast.makeText(activity, "Sync finished", Toast.LENGTH_SHORT).show();
+	}
+
+	@Override
+	public void onPageLoaded(ArrayList<YoutubeVideo> newYoutubeVideos) {
+		adapter.addAll(newYoutubeVideos);
+	}
+
+	@Override
+	public void onUpdateView(ArrayList<YoutubeVideo> youtubeVideos) {
+		adapter.clear();
+		adapter.addAll(youtubeVideos);
+		adapter.getFavoriteYoutubeVideos(this);
+	}
+
+	@Override
+	public void onLoadingFinish(ArrayList<YoutubeVideo> youtubeVideos) {
+		((FavoriteYoutubeVideoLoader) activity).onLoadingFinish(youtubeVideos);
 	}
 }

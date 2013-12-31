@@ -1,5 +1,8 @@
 package com.v4creations.phoenixedu.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -8,31 +11,22 @@ import android.os.AsyncTask;
 
 import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.v4creations.phoenixedu.model.OrmLiteCompactCursor;
-import com.v4creations.phoenixedu.model.OrmLiteCompactCursor.OrmLiteCompactCursorLoader;
 import com.v4creations.phoenixedu.model.YoutubeVideo;
 import com.v4creations.phoenixedu.util.PhoenixEduConstance;
 import com.v4creations.phoenixedu.util.PhoenixEduRestClient;
 import com.v4creations.phoenixedu.util.db.YoutubeVideosRepository;
-import com.v4creations.phoenixedu.view.fragments.YoutubeVideoListFragment;
 
 public class YoutubeVideoController {
-	private OrmLiteCompactCursor ormLiteCompactCursor;
-	private YoutubeVideoSync youtubeVideoSync;
-	private OrmLiteCompactCursorLoader ormLiteCompactCursorLoader;
-	private YoutubeVideosRepository youtubeVideosRepository;
 	protected String TAG = "YoutubeVideoController";
+	private YoutubeVideoSync youtubeVideoSync;
+	private YoutubeVideosRepository youtubeVideosRepository;
 	private boolean isDestroyed = false;
+	private boolean isDataChanged = false;
 
 	public YoutubeVideoController(Context context,
-			YoutubeVideoListFragment youtubeVideoListFragment) {
+			YoutubeVideoSync youtubeVideoSync) {
 		this.youtubeVideosRepository = new YoutubeVideosRepository(context);
-		this.ormLiteCompactCursorLoader = (OrmLiteCompactCursorLoader) youtubeVideoListFragment;
-		this.youtubeVideoSync = (YoutubeVideoSync) youtubeVideoListFragment;
-	}
-
-	private synchronized YoutubeVideosRepository getYoutubeVideosRepository() {
-		return youtubeVideosRepository;
+		this.youtubeVideoSync = youtubeVideoSync;
 	}
 
 	public void startSync() {
@@ -42,7 +36,7 @@ public class YoutubeVideoController {
 
 			@Override
 			protected String doInBackground(Void... params) {
-				return getYoutubeVideosRepository().getLastTime();
+				return youtubeVideosRepository.getLastTime();
 			}
 
 			protected void onPostExecute(String result) {
@@ -62,9 +56,11 @@ public class YoutubeVideoController {
 						super.onSuccess(response);
 						YoutubeVideo[] youtubeVideos = new Gson().fromJson(
 								response.toString(), YoutubeVideo[].class);
-						asyncToDatabase(youtubeVideos, true);
+						if (youtubeVideos.length > 0) {
+							isDataChanged = true;
+							asyncToDatabase(youtubeVideos, true);
+						}
 						syncNewYoutubeVideos(dateTimeString, 1, 0);
-						loadCursor();
 					}
 
 					@Override
@@ -89,15 +85,18 @@ public class YoutubeVideoController {
 					@Override
 					public void onSuccess(JSONArray response) {
 						super.onSuccess(response);
-						Log.e(TAG, dateTimeString);
-						Log.e(TAG, response.toString());
 						YoutubeVideo[] youtubeVideos = new Gson().fromJson(
 								response.toString(), YoutubeVideo[].class);
 						asyncToDatabase(youtubeVideos, false);
-						loadCursor();
+						if (youtubeVideos.length > 0)
+							isDataChanged = true;
 						if (youtubeVideos.length < PhoenixEduConstance.PAGE_LIMIT)
-							youtubeVideoSync.onFinishYoutubeVideoSync();
+							youtubeVideoSync
+									.onFinishYoutubeVideoSync(isDataChanged);
 						else {
+							youtubeVideoSync
+									.onPageLoaded(new ArrayList<YoutubeVideo>(
+											Arrays.asList(youtubeVideos)));
 							syncNewYoutubeVideos(dateTimeString, page + 1, 0);
 						}
 					}
@@ -127,10 +126,10 @@ public class YoutubeVideoController {
 			protected Void doInBackground(Void... params) {
 
 				if (isDeleting)
-					getYoutubeVideosRepository().deleteYoutubeVideoArray(
-							youtubeVideos);
+					youtubeVideosRepository
+							.deleteYoutubeVideoArray(youtubeVideos);
 				else
-					getYoutubeVideosRepository()
+					youtubeVideosRepository
 							.createOrUpdateYoutubeVideoArray(youtubeVideos);
 				return null;
 			}
@@ -138,22 +137,18 @@ public class YoutubeVideoController {
 		}.execute();
 	}
 
-	public void loadCursor() {
+	public void loadYoutubeVideos() {
 		if (isDestroyed)
 			return;
-		new AsyncTask<Void, Void, OrmLiteCompactCursor>() {
+		new AsyncTask<Void, Void, ArrayList<YoutubeVideo>>() {
 
 			@Override
-			protected OrmLiteCompactCursor doInBackground(Void... params) {
-				return getYoutubeVideosRepository().getAllYoutubeVideosCursor();
+			protected ArrayList<YoutubeVideo> doInBackground(Void... params) {
+				return youtubeVideosRepository.getAllYoutubeVideos();
 			}
 
-			protected void onPostExecute(OrmLiteCompactCursor result) {
-				if (ormLiteCompactCursor != null)
-					ormLiteCompactCursor.close();
-				ormLiteCompactCursor = result;
-				ormLiteCompactCursorLoader
-						.onFinishOrmLiteCompactCursorLoading(result.getCursor());
+			protected void onPostExecute(ArrayList<YoutubeVideo> result) {
+				youtubeVideoSync.onUpdateView(result);
 			};
 
 		}.execute();
@@ -161,9 +156,18 @@ public class YoutubeVideoController {
 
 	public void destroy() {
 		isDestroyed = true;
-		ormLiteCompactCursorLoader.onFinishOrmLiteCompactCursorLoading(null);
-		if (ormLiteCompactCursor != null)
-			ormLiteCompactCursor.close();
 		youtubeVideosRepository.close();
+	}
+
+	public void toggleFavorite(final YoutubeVideo youtubeVideo) {
+		new AsyncTask<Void, Void, Void>() {
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				youtubeVideosRepository.toggleFavorite(youtubeVideo);
+				return null;
+			}
+
+		}.execute();
 	}
 }

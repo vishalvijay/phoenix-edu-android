@@ -65,8 +65,6 @@ public class YoutubeVideo {
 	}
 
 	public String getDescription() {
-		if (description == null)
-			description = "";
 		return description;
 	}
 

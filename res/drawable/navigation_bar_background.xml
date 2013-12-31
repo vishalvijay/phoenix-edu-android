@@ -1,0 +1,16 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item>
+        <shape>
+            <padding android:bottom="2dp" />
+
+            <solid android:color="@color/glow_blue" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <solid android:color="@color/main_background" />
+        </shape>
+    </item>
+
+</layer-list>
