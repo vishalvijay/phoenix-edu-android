@@ -23,26 +23,34 @@
         android:gravity="center"
         android:padding="@dimen/default_padding" >
 
-        <it.sephiroth.android.library.widget.HListView
-            android:id="@+id/favoriteHList"
+        <RelativeLayout
+            android:id="@+id/favoriteVideoContainerRelativeLayout"
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:drawSelectorOnTop="true"
-            android:listSelector="@drawable/phoenixedu_list_selector_holo_light"
-            app:dividerWidth="@dimen/default_padding" />
+            android:visibility="gone" >
 
-        <TextView
-            android:id="@+id/emptyTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="80dp"
-            android:gravity="center"
-            android:text="Empty favorits" />
+            <it.sephiroth.android.library.widget.HListView
+                android:id="@+id/favoriteHList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawSelectorOnTop="true"
+                android:listSelector="@drawable/phoenixedu_list_selector_holo_light"
+                app:dividerWidth="@dimen/default_padding" />
+
+            <TextView
+                android:id="@+id/emptyTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Empty favorits" />
+        </RelativeLayout>
 
         <EditText
             android:id="@+id/searchEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Search" />
+            android:hint="Search"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <include

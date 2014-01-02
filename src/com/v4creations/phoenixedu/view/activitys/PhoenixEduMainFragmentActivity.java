@@ -45,7 +45,7 @@ public class PhoenixEduMainFragmentActivity extends FragmentActivity implements
 		verticalNavigationDrawer.add("search", searchActionBarImageButton,
 				searchEditText, false);
 		verticalNavigationDrawer.add("favorites", favoriteActionBarImageButton,
-				favoriteHListView, false);
+				findViewById(R.id.favoriteVideoContainerRelativeLayout), false);
 	}
 
 	private void initFavoriteListView() {

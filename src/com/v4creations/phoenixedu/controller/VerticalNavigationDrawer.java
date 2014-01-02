@@ -2,6 +2,7 @@ package com.v4creations.phoenixedu.controller;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;
+import java.util.Map;
 
 import android.app.Activity;
 import android.view.View;
@@ -16,16 +17,28 @@ import com.v4creations.phoenixedu.model.VerticalNavigationDrawerItem;
 public class VerticalNavigationDrawer implements OnClickListener {
 	private ViewGroup verticalNavigationDrawer;
 	private HashMap<String, VerticalNavigationDrawerItem> items;
-	private String currentlyShowingKey = null;
+	private String currentlyShowingKey = null, backUpKey = null;
+	private final static int DEFAULT_VND_RESOURCE_ID = R.id.verticalNavigationDrawer;
 
 	public VerticalNavigationDrawer(Activity activity) {
-		items = new HashMap<String, VerticalNavigationDrawerItem>();
 		verticalNavigationDrawer = (ViewGroup) activity
-				.findViewById(R.id.verticalNavigationDrawer);
+				.findViewById(DEFAULT_VND_RESOURCE_ID);
+		init();
+	}
+
+	public VerticalNavigationDrawer(Activity activity, int VNDResourceId) {
+		verticalNavigationDrawer = (ViewGroup) activity
+				.findViewById(VNDResourceId);
+		init();
+	}
+
+	private void init() {
+		items = new HashMap<String, VerticalNavigationDrawerItem>();
 		verticalNavigationDrawer.setVisibility(View.GONE);
 	}
 
-	public void add(String key, View actionView, View view, boolean addAsChaild) {
+	public void add(String key, View actionView, View view,
+			boolean isInflatedView) {
 		if (key == null)
 			throw new NullPointerException("key can't be null");
 		if (key.trim().equals(""))
@@ -38,12 +51,19 @@ public class VerticalNavigationDrawer implements OnClickListener {
 		actionView.setTag(key);
 		actionView.setOnClickListener(this);
 		items.put(key, new VerticalNavigationDrawerItem(actionView, view));
-		if (addAsChaild == true)
+		if (isInflatedView == true)
 			verticalNavigationDrawer.addView(view);
 	}
 
 	@Override
 	public void onClick(View actionView) {
+		if (backUpKey != null) {
+			items.get(backUpKey)
+					.getActionView()
+					.setBackgroundResource(
+							R.drawable.action_bar_button_selecter);
+			backUpKey = null;
+		}
 		String key = (String) actionView.getTag();
 		if (currentlyShowingKey == null) {
 			showNew(key);
@@ -55,8 +75,9 @@ public class VerticalNavigationDrawer implements OnClickListener {
 	}
 
 	private void hideAndShowNew(final String key) {
-		final VerticalNavigationDrawerItem hideVerticalNavigationDrawerItem = items
+		VerticalNavigationDrawerItem hideVerticalNavigationDrawerItem = items
 				.get(currentlyShowingKey);
+		backUpKey = key;
 		hide(hideVerticalNavigationDrawerItem);
 		items.get(key)
 				.getActionView()
@@ -74,10 +95,9 @@ public class VerticalNavigationDrawer implements OnClickListener {
 
 			@Override
 			public void onAnimationEnd(Animation animation) {
-				hideVerticalNavigationDrawerItem.getView().setVisibility(
-						View.GONE);
 				verticalNavigationDrawer.setVisibility(View.GONE);
 				showNew(key);
+				backUpKey = null;
 			}
 
 			@Override
@@ -91,7 +111,7 @@ public class VerticalNavigationDrawer implements OnClickListener {
 	private void hideCurrent() {
 		VerticalNavigationDrawerItem item = items.get(currentlyShowingKey);
 		hide(item);
-		navigationAnimater(true, item.getView());
+		navigationAnimater(true);
 	}
 
 	private void hide(VerticalNavigationDrawerItem item) {
@@ -101,9 +121,13 @@ public class VerticalNavigationDrawer implements OnClickListener {
 	}
 
 	private void showNew(String key) {
+		for (Map.Entry<String, VerticalNavigationDrawerItem> entry : items
+				.entrySet()) {
+			entry.getValue().getView().setVisibility(View.GONE);
+		}
 		VerticalNavigationDrawerItem item = items.get(key);
 		show(item, key);
-		navigationAnimater(false, null);
+		navigationAnimater(false);
 	}
 
 	private void show(VerticalNavigationDrawerItem item, String key) {
@@ -113,7 +137,7 @@ public class VerticalNavigationDrawer implements OnClickListener {
 		currentlyShowingKey = key;
 	}
 
-	private void navigationAnimater(final boolean isHide, final View view) {
+	private void navigationAnimater(final boolean isHide) {
 		Animation animation;
 		if (isHide)
 			animation = new TranslateAnimation(0, 0, 0,
@@ -123,7 +147,6 @@ public class VerticalNavigationDrawer implements OnClickListener {
 					-verticalNavigationDrawer.getHeight(), 0);
 		animation.setDuration(300);
 		animation.setFillAfter(true);
-
 		animation.setAnimationListener(new Animation.AnimationListener() {
 			@Override
 			public void onAnimationStart(Animation animation) {
@@ -133,10 +156,8 @@ public class VerticalNavigationDrawer implements OnClickListener {
 
 			@Override
 			public void onAnimationEnd(Animation animation) {
-				if (isHide == true) {
+				if (isHide == true)
 					verticalNavigationDrawer.setVisibility(View.GONE);
-					view.setVisibility(View.GONE);
-				}
 			}
 
 			@Override
