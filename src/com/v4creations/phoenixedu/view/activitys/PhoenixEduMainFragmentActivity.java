@@ -72,4 +72,11 @@ public class PhoenixEduMainFragmentActivity extends FragmentActivity implements
 			favoriteArrayAdapter.remove(youtubeVideo);
 	}
 
+	@Override
+	public void onBackPressed() {
+		if (verticalNavigationDrawer.isVisible())
+			verticalNavigationDrawer.hideCurrent();
+		else
+			super.onBackPressed();
+	}
 }

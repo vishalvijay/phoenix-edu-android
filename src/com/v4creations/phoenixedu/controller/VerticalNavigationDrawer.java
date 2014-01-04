@@ -110,7 +110,7 @@ public class VerticalNavigationDrawer implements OnClickListener {
 		verticalNavigationDrawer.startAnimation(animation);
 	}
 
-	private void hideCurrent() {
+	public void hideCurrent() {
 		VerticalNavigationDrawerItem item = items.get(currentlyShowingKey);
 		hide(item);
 		navigationAnimater(true, item.getView());
@@ -170,5 +170,10 @@ public class VerticalNavigationDrawer implements OnClickListener {
 		});
 
 		verticalNavigationDrawer.startAnimation(animation);
+	}
+
+	public boolean isVisible() {
+		return verticalNavigationDrawer.getVisibility() == View.VISIBLE ? true
+				: false;
 	}
 }
