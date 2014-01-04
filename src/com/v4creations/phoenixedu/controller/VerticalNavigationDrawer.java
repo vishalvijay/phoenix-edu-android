@@ -75,7 +75,7 @@ public class VerticalNavigationDrawer implements OnClickListener {
 	}
 
 	private void hideAndShowNew(final String key) {
-		VerticalNavigationDrawerItem hideVerticalNavigationDrawerItem = items
+		final VerticalNavigationDrawerItem hideVerticalNavigationDrawerItem = items
 				.get(currentlyShowingKey);
 		backUpKey = key;
 		hide(hideVerticalNavigationDrawerItem);
@@ -95,6 +95,8 @@ public class VerticalNavigationDrawer implements OnClickListener {
 
 			@Override
 			public void onAnimationEnd(Animation animation) {
+				hideVerticalNavigationDrawerItem.getView().setVisibility(
+						View.GONE);
 				verticalNavigationDrawer.setVisibility(View.GONE);
 				showNew(key);
 				backUpKey = null;
@@ -111,7 +113,7 @@ public class VerticalNavigationDrawer implements OnClickListener {
 	private void hideCurrent() {
 		VerticalNavigationDrawerItem item = items.get(currentlyShowingKey);
 		hide(item);
-		navigationAnimater(true);
+		navigationAnimater(true, item.getView());
 	}
 
 	private void hide(VerticalNavigationDrawerItem item) {
@@ -127,7 +129,7 @@ public class VerticalNavigationDrawer implements OnClickListener {
 		}
 		VerticalNavigationDrawerItem item = items.get(key);
 		show(item, key);
-		navigationAnimater(false);
+		navigationAnimater(false, null);
 	}
 
 	private void show(VerticalNavigationDrawerItem item, String key) {
@@ -137,7 +139,7 @@ public class VerticalNavigationDrawer implements OnClickListener {
 		currentlyShowingKey = key;
 	}
 
-	private void navigationAnimater(final boolean isHide) {
+	private void navigationAnimater(final boolean isHide, final View view) {
 		Animation animation;
 		if (isHide)
 			animation = new TranslateAnimation(0, 0, 0,
@@ -156,8 +158,10 @@ public class VerticalNavigationDrawer implements OnClickListener {
 
 			@Override
 			public void onAnimationEnd(Animation animation) {
-				if (isHide == true)
+				if (isHide == true) {
+					view.setVisibility(View.GONE);
 					verticalNavigationDrawer.setVisibility(View.GONE);
+				}
 			}
 
 			@Override
