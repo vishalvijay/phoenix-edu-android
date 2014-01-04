@@ -90,18 +90,17 @@ public class YoutubeVideoArrayAdapter extends ArrayAdapter<YoutubeVideo> {
 					.findViewById(R.id.watchedImageView);
 			viewHolder.favoriteImageView = (ImageButton) convertView
 					.findViewById(R.id.favoriteImageButton);
-			viewHolder.favoriteImageView
-					.setOnClickListener(new OnClickListener() {
-
-						@Override
-						public void onClick(View v) {
-							toggleFavorite((ImageButton) v, youtubeVideo);
-						}
-					});
 			convertView.setTag(viewHolder);
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
+		viewHolder.favoriteImageView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				toggleFavorite((ImageButton) v, youtubeVideo);
+			}
+		});
 		assineValues(viewHolder, youtubeVideo);
 		return convertView;
 	}

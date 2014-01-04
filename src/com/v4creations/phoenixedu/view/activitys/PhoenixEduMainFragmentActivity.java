@@ -63,4 +63,13 @@ public class PhoenixEduMainFragmentActivity extends FragmentActivity implements
 		favoriteArrayAdapter.clear();
 		favoriteArrayAdapter.addAll(youtubeVideos);
 	}
+
+	@Override
+	public void onFavoriteItemToggle(YoutubeVideo youtubeVideo) {
+		if (youtubeVideo.isFavorite())
+			favoriteArrayAdapter.add(youtubeVideo);
+		else
+			favoriteArrayAdapter.remove(youtubeVideo);
+	}
+
 }

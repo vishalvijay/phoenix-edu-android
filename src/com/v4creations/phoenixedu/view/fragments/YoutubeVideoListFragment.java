@@ -92,4 +92,9 @@ public class YoutubeVideoListFragment extends Fragment implements
 	public void onLoadingFinish(ArrayList<YoutubeVideo> youtubeVideos) {
 		((FavoriteYoutubeVideoLoader) activity).onLoadingFinish(youtubeVideos);
 	}
+
+	@Override
+	public void onFavoriteItemToggle(YoutubeVideo youtubeVideo) {
+		((FavoriteYoutubeVideoLoader) activity).onFavoriteItemToggle(youtubeVideo);
+	}
 }
