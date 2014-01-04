@@ -26,4 +26,10 @@ public class VerticalNavigationDrawerItem {
 	public void setView(View view) {
 		this.mView = view;
 	}
+
+	public static interface VerticalNavigationDrawerItemStatusListener {
+		public void onVNDIHide(VerticalNavigationDrawerItem item);
+
+		public void onVNDIShow(VerticalNavigationDrawerItem item);
+	}
 }

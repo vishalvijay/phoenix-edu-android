@@ -13,12 +13,14 @@ import android.view.animation.TranslateAnimation;
 
 import com.v4creations.phoenixedu.R;
 import com.v4creations.phoenixedu.model.VerticalNavigationDrawerItem;
+import com.v4creations.phoenixedu.model.VerticalNavigationDrawerItem.VerticalNavigationDrawerItemStatusListener;
 
 public class VerticalNavigationDrawer implements OnClickListener {
 	private ViewGroup verticalNavigationDrawer;
 	private HashMap<String, VerticalNavigationDrawerItem> items;
 	private String currentlyShowingKey = null, backUpKey = null;
 	private final static int DEFAULT_VND_RESOURCE_ID = R.id.verticalNavigationDrawer;
+	private VerticalNavigationDrawerItemStatusListener verticalNavigationDrawerItemStatusListener;
 
 	public VerticalNavigationDrawer(Activity activity) {
 		verticalNavigationDrawer = (ViewGroup) activity
@@ -111,6 +113,8 @@ public class VerticalNavigationDrawer implements OnClickListener {
 	}
 
 	public void hideCurrent() {
+		if (currentlyShowingKey == null)
+			return;
 		VerticalNavigationDrawerItem item = items.get(currentlyShowingKey);
 		hide(item);
 		navigationAnimater(true, item.getView());
@@ -120,6 +124,8 @@ public class VerticalNavigationDrawer implements OnClickListener {
 		item.getActionView().setBackgroundResource(
 				R.drawable.action_bar_button_selecter);
 		currentlyShowingKey = null;
+		if (verticalNavigationDrawerItemStatusListener != null)
+			verticalNavigationDrawerItemStatusListener.onVNDIHide(item);
 	}
 
 	private void showNew(String key) {
@@ -137,6 +143,8 @@ public class VerticalNavigationDrawer implements OnClickListener {
 				R.drawable.action_bar_button_selected_selecter);
 		item.getView().setVisibility(View.VISIBLE);
 		currentlyShowingKey = key;
+		if (verticalNavigationDrawerItemStatusListener != null)
+			verticalNavigationDrawerItemStatusListener.onVNDIShow(item);
 	}
 
 	private void navigationAnimater(final boolean isHide, final View view) {
@@ -175,5 +183,25 @@ public class VerticalNavigationDrawer implements OnClickListener {
 	public boolean isVisible() {
 		return verticalNavigationDrawer.getVisibility() == View.VISIBLE ? true
 				: false;
+	}
+
+	public void hideAllActionViews() {
+		for (Map.Entry<String, VerticalNavigationDrawerItem> entry : items
+				.entrySet()) {
+			entry.getValue().getActionView().setVisibility(View.GONE);
+		}
+		hideCurrent();
+	}
+
+	public void showAllActionViews() {
+		for (Map.Entry<String, VerticalNavigationDrawerItem> entry : items
+				.entrySet()) {
+			entry.getValue().getActionView().setVisibility(View.VISIBLE);
+		}
+	}
+
+	public void registerVNDIStatusListener(
+			VerticalNavigationDrawerItemStatusListener verticalNavigationDrawerItemStatusListener) {
+		this.verticalNavigationDrawerItemStatusListener = verticalNavigationDrawerItemStatusListener;
 	}
 }
