@@ -17,10 +17,11 @@ import com.v4creations.phoenixedu.controller.YoutubeVideoController;
 import com.v4creations.phoenixedu.controller.YoutubeVideoSync;
 import com.v4creations.phoenixedu.controller.adapter.YoutubeVideoArrayAdapter;
 import com.v4creations.phoenixedu.model.YoutubeVideo;
+import com.v4creations.phoenixedu.model.YoutubeVideo.YoutubeVideoFilter;
 import com.v4creations.phoenixedu.view.activitys.PhoenixEduMainFragmentActivity;
 
-public class YoutubeVideoListFragment extends Fragment implements
-		YoutubeVideoSync, FavoriteYoutubeVideoLoader {
+public class YoutubeVideoFragment extends Fragment implements YoutubeVideoSync,
+		FavoriteYoutubeVideoLoader, YoutubeVideoFilter {
 	private PhoenixEduMainFragmentActivity activity;
 	private YoutubeVideoArrayAdapter adapter;
 	private YoutubeVideoController controller;
@@ -95,6 +96,16 @@ public class YoutubeVideoListFragment extends Fragment implements
 
 	@Override
 	public void onFavoriteItemToggle(YoutubeVideo youtubeVideo) {
-		((FavoriteYoutubeVideoLoader) activity).onFavoriteItemToggle(youtubeVideo);
+		((FavoriteYoutubeVideoLoader) activity)
+				.onFavoriteItemToggle(youtubeVideo);
+	}
+
+	public void searchFilter(CharSequence s) {
+		adapter.getFilter().filter(s);
+	}
+
+	@Override
+	public void categoryFilter(String category) {
+		activity.categoryFilter(category);
 	}
 }

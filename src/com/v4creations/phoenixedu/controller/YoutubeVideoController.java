@@ -12,24 +12,27 @@ import android.os.AsyncTask;
 import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.v4creations.phoenixedu.model.YoutubeVideo;
+import com.v4creations.phoenixedu.model.YoutubeVideo.YoutubeVideoFilter;
 import com.v4creations.phoenixedu.util.PhoenixEduConstance;
 import com.v4creations.phoenixedu.util.PhoenixEduRestClient;
 import com.v4creations.phoenixedu.util.db.YoutubeVideosRepository;
-import com.v4creations.phoenixedu.view.fragments.YoutubeVideoListFragment;
+import com.v4creations.phoenixedu.view.fragments.YoutubeVideoFragment;
 
-public class YoutubeVideoController {
+public class YoutubeVideoController implements YoutubeVideoFilter {
 	protected String TAG = "YoutubeVideoController";
 	private YoutubeVideoSync youtubeVideoSync;
 	private YoutubeVideosRepository youtubeVideosRepository;
 	private FavoriteYoutubeVideoLoader favoriteYoutubeVideoLoader;
+	private YoutubeVideoFilter youtubeVideoFilter;
 	private boolean isDestroyed = false;
 	private boolean isDataChanged = false;
 
 	public YoutubeVideoController(Context context,
-			YoutubeVideoListFragment youtubeVideoListFragment) {
+			YoutubeVideoFragment youtubeVideoListFragment) {
 		this.youtubeVideosRepository = new YoutubeVideosRepository(context);
 		youtubeVideoSync = (YoutubeVideoSync) youtubeVideoListFragment;
 		favoriteYoutubeVideoLoader = (FavoriteYoutubeVideoLoader) youtubeVideoListFragment;
+		youtubeVideoFilter = (YoutubeVideoFilter) youtubeVideoListFragment;
 	}
 
 	public void startSync() {
@@ -173,5 +176,10 @@ public class YoutubeVideoController {
 
 		}.execute();
 		favoriteYoutubeVideoLoader.onFavoriteItemToggle(youtubeVideo);
+	}
+
+	@Override
+	public void categoryFilter(String category) {
+		youtubeVideoFilter.categoryFilter(category);
 	}
 }

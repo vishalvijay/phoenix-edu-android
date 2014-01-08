@@ -99,7 +99,8 @@ public class YoutubeVideo {
 	}
 
 	public String toString() {
-		return getUpdatedAt();
+		return getTitle() + " " + getDescription() + " " + getCategory() + " "
+				+ getChannel();
 	}
 
 	public boolean isFavorite() {
@@ -108,5 +109,9 @@ public class YoutubeVideo {
 
 	public void setFavorite(boolean isFavorite) {
 		this.isFavorite = isFavorite;
+	}
+
+	public static interface YoutubeVideoFilter {
+		public void categoryFilter(String category);
 	}
 }

@@ -7,12 +7,11 @@
     android:orientation="vertical"
     tools:context=".PhonixMainActivity" >
 
-    <fragment
-        android:id="@+id/youtubeVideoFragment"
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/action_bar_default_height"
-        class="com.v4creations.phoenixedu.view.fragments.YoutubeVideoListFragment" />
+        android:layout_marginTop="@dimen/action_bar_default_height" />
 
     <RelativeLayout
         android:id="@+id/verticalNavigationDrawer"
@@ -50,6 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Search"
+            android:selectAllOnFocus="true"
             android:visibility="gone" />
     </RelativeLayout>
 

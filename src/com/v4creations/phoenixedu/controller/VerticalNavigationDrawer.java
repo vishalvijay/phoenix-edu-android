@@ -66,6 +66,8 @@ public class VerticalNavigationDrawer implements OnClickListener {
 							R.drawable.action_bar_button_selecter);
 			backUpKey = null;
 		}
+		if (actionView.getTag() == null)
+			return;
 		String key = (String) actionView.getTag();
 		if (currentlyShowingKey == null) {
 			showNew(key);
@@ -123,9 +125,10 @@ public class VerticalNavigationDrawer implements OnClickListener {
 	private void hide(VerticalNavigationDrawerItem item) {
 		item.getActionView().setBackgroundResource(
 				R.drawable.action_bar_button_selecter);
-		currentlyShowingKey = null;
 		if (verticalNavigationDrawerItemStatusListener != null)
-			verticalNavigationDrawerItemStatusListener.onVNDIHide(item);
+			verticalNavigationDrawerItemStatusListener.onVNDIHide(
+					currentlyShowingKey, item);
+		currentlyShowingKey = null;
 	}
 
 	private void showNew(String key) {
@@ -144,7 +147,7 @@ public class VerticalNavigationDrawer implements OnClickListener {
 		item.getView().setVisibility(View.VISIBLE);
 		currentlyShowingKey = key;
 		if (verticalNavigationDrawerItemStatusListener != null)
-			verticalNavigationDrawerItemStatusListener.onVNDIShow(item);
+			verticalNavigationDrawerItemStatusListener.onVNDIShow(key, item);
 	}
 
 	private void navigationAnimater(final boolean isHide, final View view) {
@@ -200,7 +203,7 @@ public class VerticalNavigationDrawer implements OnClickListener {
 		}
 	}
 
-	public void registerVNDIStatusListener(
+	public void setVNDIStatusChangeListener(
 			VerticalNavigationDrawerItemStatusListener verticalNavigationDrawerItemStatusListener) {
 		this.verticalNavigationDrawerItemStatusListener = verticalNavigationDrawerItemStatusListener;
 	}

@@ -90,17 +90,29 @@ public class YoutubeVideoArrayAdapter extends ArrayAdapter<YoutubeVideo> {
 					.findViewById(R.id.watchedImageView);
 			viewHolder.favoriteImageView = (ImageButton) convertView
 					.findViewById(R.id.favoriteImageButton);
+			viewHolder.categoryTextView
+					.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							String category = ((YoutubeVideo) v.getTag())
+									.getCategory();
+							youtubeVideoController.categoryFilter(category);
+						}
+					});
+			viewHolder.favoriteImageView
+					.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							toggleFavorite((ImageButton) v,
+									(YoutubeVideo) v.getTag());
+						}
+					});
 			convertView.setTag(viewHolder);
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
-		viewHolder.favoriteImageView.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				toggleFavorite((ImageButton) v, youtubeVideo);
-			}
-		});
 		assineValues(viewHolder, youtubeVideo);
 		return convertView;
 	}
@@ -118,6 +130,7 @@ public class YoutubeVideoArrayAdapter extends ArrayAdapter<YoutubeVideo> {
 	private void assineValues(ViewHolder viewHolder, YoutubeVideo youtubeVideo) {
 		viewHolder.categoryTextView.setText("#"
 				+ youtubeVideo.getCategory().toLowerCase(Locale.getDefault()));
+		viewHolder.categoryTextView.setTag(youtubeVideo);
 		viewHolder.descriptionTextView.setText(getDescription(youtubeVideo
 				.getDescription()));
 		viewHolder.durationTextView.setText(getDuration(youtubeVideo
@@ -130,7 +143,7 @@ public class YoutubeVideoArrayAdapter extends ArrayAdapter<YoutubeVideo> {
 				.setText(getHumanReadableUpdateAt(youtubeVideo.getUpdatedAt()));
 		viewHolder.watchedImageView.setVisibility(getVisibility(youtubeVideo
 				.isWatched()));
-		viewHolder.favoriteImageView.setTag(youtubeVideo.getYid());
+		viewHolder.favoriteImageView.setTag(youtubeVideo);
 		assineFavorite(viewHolder.favoriteImageView, youtubeVideo.isFavorite());
 		phoenixEduImageLoader.assignImage(
 				viewHolder.thumbnailLoadingProgressBar,

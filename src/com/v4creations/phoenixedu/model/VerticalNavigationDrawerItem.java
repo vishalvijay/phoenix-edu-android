@@ -28,8 +28,8 @@ public class VerticalNavigationDrawerItem {
 	}
 
 	public static interface VerticalNavigationDrawerItemStatusListener {
-		public void onVNDIHide(VerticalNavigationDrawerItem item);
+		public void onVNDIHide(String key, VerticalNavigationDrawerItem item);
 
-		public void onVNDIShow(VerticalNavigationDrawerItem item);
+		public void onVNDIShow(String key, VerticalNavigationDrawerItem item);
 	}
 }

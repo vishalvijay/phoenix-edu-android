@@ -1,9 +1,12 @@
 package com.v4creations.phoenixedu.util;
 
-import com.v4creations.phoenixedu.model.YoutubeVideoQualityDiamentions;
-
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+
+import com.v4creations.phoenixedu.model.YoutubeVideoQualityDiamentions;
 
 public class PhoenixEduUtil {
 	public static YoutubeVideoQualityDiamentions getYoutubeVideoDiamention(
@@ -23,5 +26,23 @@ public class PhoenixEduUtil {
 		default:
 			return PhoenixEduConstance.YOUTUBE_IMAGE_QUALITY_TYPES[1];
 		}
+	}
+
+	public static void hideSoftKeyBord(Context context, View view) {
+		InputMethodManager imm = (InputMethodManager) context
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+	}
+
+	public static void showSoftKeyBord(Context context, View view) {
+		InputMethodManager imm = (InputMethodManager) context
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.toggleSoftInputFromWindow(view.getWindowToken(),
+				InputMethodManager.SHOW_FORCED, 0);
+	}
+
+	public static boolean isEditTextEmpty(EditText editText) {
+		return editText.getText().toString() == null
+				|| editText.getText().toString().equals("");
 	}
 }

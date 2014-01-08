@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -13,10 +15,16 @@ import com.v4creations.phoenixedu.R;
 import com.v4creations.phoenixedu.controller.FavoriteYoutubeVideoLoader;
 import com.v4creations.phoenixedu.controller.VerticalNavigationDrawer;
 import com.v4creations.phoenixedu.controller.adapter.FavoriteYotubeVideoArrayAdapter;
+import com.v4creations.phoenixedu.model.VerticalNavigationDrawerItem;
+import com.v4creations.phoenixedu.model.VerticalNavigationDrawerItem.VerticalNavigationDrawerItemStatusListener;
 import com.v4creations.phoenixedu.model.YoutubeVideo;
+import com.v4creations.phoenixedu.model.YoutubeVideo.YoutubeVideoFilter;
+import com.v4creations.phoenixedu.util.PhoenixEduUtil;
+import com.v4creations.phoenixedu.view.fragments.YoutubeVideoFragment;
 
 public class PhoenixEduMainFragmentActivity extends FragmentActivity implements
-		FavoriteYoutubeVideoLoader {
+		FavoriteYoutubeVideoLoader, VerticalNavigationDrawerItemStatusListener,
+		YoutubeVideoFilter {
 
 	private VerticalNavigationDrawer verticalNavigationDrawer;
 	private HListView favoriteHListView;
@@ -24,17 +32,32 @@ public class PhoenixEduMainFragmentActivity extends FragmentActivity implements
 	private ImageButton searchActionBarImageButton;
 	private ImageButton favoriteActionBarImageButton;
 	private FavoriteYotubeVideoArrayAdapter favoriteArrayAdapter;
+	private YoutubeVideoFragment youtubeVideoFragment;
+
+	private static final String VND_KEY_SEARCH = "search",
+			VND_KEY_FAVORITE = "favorites";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_phoenix_edu_main);
+		if (findViewById(R.id.fragment_container) != null) {
+			if (savedInstanceState != null) {
+				return;
+			}
+			youtubeVideoFragment = new YoutubeVideoFragment();
+			youtubeVideoFragment.setArguments(getIntent().getExtras());
+			getSupportFragmentManager().beginTransaction()
+					.add(R.id.fragment_container, youtubeVideoFragment)
+					.commit();
+		}
 		initViews();
 	}
 
 	private void initViews() {
 		initFavoriteListView();
 		searchEditText = (EditText) findViewById(R.id.searchEditText);
+		searchEditText.addTextChangedListener(searchTextWatcher);
 		searchActionBarImageButton = (ImageButton) findViewById(R.id.searchImageButton);
 		favoriteActionBarImageButton = (ImageButton) findViewById(R.id.favoriteImageButton);
 		initVerticalNavigationDrawer();
@@ -42,10 +65,12 @@ public class PhoenixEduMainFragmentActivity extends FragmentActivity implements
 
 	private void initVerticalNavigationDrawer() {
 		verticalNavigationDrawer = new VerticalNavigationDrawer(this);
-		verticalNavigationDrawer.add("search", searchActionBarImageButton,
-				searchEditText, false);
-		verticalNavigationDrawer.add("favorites", favoriteActionBarImageButton,
+		verticalNavigationDrawer.add(VND_KEY_SEARCH,
+				searchActionBarImageButton, searchEditText, false);
+		verticalNavigationDrawer.add(VND_KEY_FAVORITE,
+				favoriteActionBarImageButton,
 				findViewById(R.id.favoriteVideoContainerRelativeLayout), false);
+		verticalNavigationDrawer.setVNDIStatusChangeListener(this);
 	}
 
 	private void initFavoriteListView() {
@@ -76,7 +101,49 @@ public class PhoenixEduMainFragmentActivity extends FragmentActivity implements
 	public void onBackPressed() {
 		if (verticalNavigationDrawer.isVisible())
 			verticalNavigationDrawer.hideCurrent();
+		else if (!PhoenixEduUtil.isEditTextEmpty(searchEditText))
+			searchEditText.setText("");
 		else
 			super.onBackPressed();
+	}
+
+	private TextWatcher searchTextWatcher = new TextWatcher() {
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before,
+				int count) {
+			youtubeVideoFragment.searchFilter(s);
+		}
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+		}
+
+		@Override
+		public void afterTextChanged(Editable s) {
+		}
+	};
+
+	@Override
+	public void onVNDIHide(String key, VerticalNavigationDrawerItem item) {
+		if (key.equals(VND_KEY_SEARCH))
+			PhoenixEduUtil.hideSoftKeyBord(getApplicationContext(),
+					searchEditText);
+	}
+
+	@Override
+	public void onVNDIShow(String key, VerticalNavigationDrawerItem item) {
+		if (key.equals(VND_KEY_SEARCH)) {
+			searchEditText.requestFocus();
+			PhoenixEduUtil.showSoftKeyBord(getApplicationContext(),
+					searchEditText);
+		}
+
+	}
+
+	@Override
+	public void categoryFilter(String category) {
+		searchEditText.setText(category);
 	}
 }
